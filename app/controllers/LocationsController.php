@@ -9,7 +9,6 @@ class LocationsController extends \BaseController {
 	 */
 	public function index()
 	{
-		phpinfo();
 		$locations = Locations::all();
 
 		Return View::make('locations.index', ['locations'=>$locations]);
