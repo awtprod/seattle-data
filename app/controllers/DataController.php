@@ -10,25 +10,17 @@ class DataController extends \BaseController {
 	public function index()
 	{
 
-		$query = Data::all();
+		$query = Data::whereBetween('id', [19964,56593])->get();
 
 		foreach ($query as $arr) {
 
 			$time = date('H:i', strtotime($arr->created_at));
 
-			if($arr->id < '17814') {
-
-				$update = Data::whereId($arr->id)->first();
-				$update->day = 'Wednesday';
-				$update->time = $time;
-				$update->save();
-			}
-			else{
 				$update = Data::whereId($arr->id)->first();
 				$update->day = 'Thursday';
 				$update->time = $time;
 				$update->save();
-			}
+
 		}
 	}
 	/**
