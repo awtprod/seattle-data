@@ -21,6 +21,6 @@ class Data extends Eloquent implements UserInterface, RemindableInterface {
 	 *
 	 * @var array
 	 */
-	protected $hidden = array('lata', 'lng', 'uber_surge', 'lyft_surge', 'precip_hr', 'wndspd', 'temp');
+	protected $hidden = array('lata', 'lng','day','uber_surge', 'lyft_surge', 'precip_hr', 'wndspd', 'temp');
 
 }

@@ -22,3 +22,15 @@ Route::get('collect', [
 	'as' => 'data.store',
 	'uses' => 'DataController@store'
 ]);
+Route::get('live', [
+	'as' => 'data.show',
+	'uses' => 'DataController@show'
+]);
+Route::get('data/live', [
+	'as' => 'data.live',
+	'uses' => 'DataController@live'
+]);
+Route::get('data', [
+	'as' => 'data.index',
+	'uses' => 'DataController@index'
+]);

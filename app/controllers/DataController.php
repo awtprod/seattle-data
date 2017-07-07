@@ -1,5 +1,5 @@
 <?php
-
+use Carbon\Carbon;
 class DataController extends \BaseController {
 
 	/**
@@ -10,9 +10,27 @@ class DataController extends \BaseController {
 	public function index()
 	{
 
+		$query = Data::all();
+
+		foreach ($query as $arr) {
+
+			$time = date('H:i', strtotime($arr->created_at));
+
+			if($arr->id < '17814') {
+
+				$update = Data::whereId($arr->id)->first();
+				$update->day = 'Wednesday';
+				$update->time = $time;
+				$update->save();
+			}
+			else{
+				$update = Data::whereId($arr->id)->first();
+				$update->day = 'Thursday';
+				$update->time = $time;
+				$update->save();
+			}
+		}
 	}
-
-
 	/**
 	 * Show the form for creating a new resource.
 	 *
@@ -35,12 +53,16 @@ class DataController extends \BaseController {
 
 		$cur_obs = $this->cur_obs();
 
+		$date = Carbon::now();
+		$time = date('H:i', strtotime($date));
+
 		foreach ($locations as $location){
 
 			$data_point = new Data;
 			$data_point->lat = $location->lat;
 			$data_point->lng = $location->lng;
-			//$data_point->uber_surge = $this->uber($location);
+			$data_point->day = $date->format('l');
+			$data_point->time = $time;
 			$data_point->lyft_surge = $this->lyft($location);
 			$data_point->weather = $cur_obs->weather;
 			$data_point->precip_tot = $cur_obs->precip_today_in;
@@ -195,11 +217,17 @@ class DataController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($id)
+	public function show()
 	{
-		//
+		Return View::make('data.show');
 	}
 
+	public function live()
+	{
+		$locations = Locations::all();
+
+		//$data = Data::where
+	}
 
 	/**
 	 * Show the form for editing the specified resource.
@@ -221,7 +249,7 @@ class DataController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		//
+
 	}
 
 
