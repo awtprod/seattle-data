@@ -10,7 +10,7 @@ class DataController extends \BaseController {
 	public function index()
 	{
 
-		$query = Data::whereBetween('id', [19964,56593])->get();
+		$query = Data::whereBetween('id', [43301,56593])->get();
 
 		foreach ($query as $arr) {
 
