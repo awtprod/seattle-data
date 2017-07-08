@@ -233,7 +233,7 @@ class DataController extends \BaseController {
 			$surge_data[]=[
 			$location->lat,
 			$location->lng,
-			Data::whereLat($location->lat)->whereLng($location->lng)->whereDayOfWeek('Monday')->orderBy('time', 'desc')->pluck('lyft_surge'),
+			Data::whereLat($location->lat)->whereLng($location->lng)->whereDayOfWeek($day)->orderBy('time', 'desc')->pluck('lyft_surge'),
 			Data::whereLat($location->lat)->whereLng($location->lng)->orderBy('time', 'desc')->pluck('time')
 
 			];
