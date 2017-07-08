@@ -225,21 +225,17 @@ class DataController extends \BaseController {
 
 	public function live()
 	{
-		$locations = Locations::all();
-		$date = Carbon::now();
-		$day = $date->format('l');
-		foreach ($locations as $location){
+		$data = Data::take(156)->orderBy('time', 'desc')->get();
+		foreach ($data as $test){
 
-			$surge_data[]=[
-			$location->lat,
-			$location->lng,
-			Data::whereLat($location->lat)->whereLng($location->lng)->whereDayOfWeek($day)->orderBy('time', 'desc')->pluck('lyft_surge'),
-				Data::whereLat($location->lat)->whereLng($location->lng)->whereDayOfWeek($day)->orderBy('time', 'desc')->pluck('time')
-
+			$array[] =[
+				$test->lat,
+				$test->lng,
+				$test->lyft_surge
 			];
-
 		}
-		return Response::json($surge_data);
+
+		return Response::json($array);
 	}
 
 	/**
