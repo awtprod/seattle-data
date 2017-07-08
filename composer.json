@@ -7,7 +7,7 @@
 	"require": {
 		"laravel/framework": "4.2.*",
 		"indatus/dispatcher": "1.4.*@dev",
-		"nesbot/carbon": "~1.18"
+		"nesbot/carbon": "~1.18",
 	},
 	"autoload": {
 		"classmap": [

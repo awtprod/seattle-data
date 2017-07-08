@@ -113,6 +113,8 @@ class DataController extends \BaseController {
 
 	public function uber($location)
 	{
+
+		set_time_limit(240);
 		$token = Tokens::whereService('uber')->pluck('token');
 
 		// Address input
@@ -120,14 +122,13 @@ class DataController extends \BaseController {
 		$lng = urlencode($location->lng);
 
 // Build the URL
-		$req = "https://api.uber.com/v1.2/estimates/price?start_latitude={$lat}&start_longitude={$lng}&end_latitude=47.580585&end_longitude=-122.308269";
+		$req = "https://api.uber.com/v1.2/estimates/price?start_latitude={$lat}&start_longitude={$lng}&end_latitude={$lat}&end_longitude={$lng}";
 
 		$curl = curl_init();
 
 		curl_setopt_array($curl, array(
 			CURLOPT_URL => $req,
 			CURLOPT_RETURNTRANSFER => true,
-			CURLOPT_CAINFO, app_path("/cacert.pem"),
 			CURLOPT_ENCODING => "",
 			CURLOPT_MAXREDIRS => 10,
 			CURLOPT_TIMEOUT => 30,
@@ -144,15 +145,23 @@ class DataController extends \BaseController {
 		$response = curl_exec($curl);
 
 		$data = json_decode($response);
+
 		$err = curl_error($curl);
 
 		curl_close($curl);
-
+		if(!empty($data->prices[0]->surge_multiplier)){
+			return ($data->prices[0]->surge_multiplier);
+		}
+		else {
+			return ($data->prices[0]->low_estimate)/4;
+		}
 		if ($err) {
 			return 1;
 		}
 
-		$arr = (array) $data;
+	/*	$arr = (array) $data;
+
+
 
 		if(!empty($arr["prices"][0]->surge_multiplier)){
 
@@ -163,7 +172,7 @@ class DataController extends \BaseController {
 
 			return 1;
 
-		}
+		} */
 	}
 
 	public function cur_obs()
@@ -218,7 +227,18 @@ class DataController extends \BaseController {
 	{
 		$locations = Locations::all();
 
-		//$data = Data::where
+		foreach ($locations as $location){
+
+			$surge_data[]=[
+			$location->lat,
+			$location->lng,
+			Data::whereLat($location->lat)->whereLng($location->lng)->orderBy('time', 'desc')->pluck('lyft_surge'),
+			Data::whereLat($location->lat)->whereLng($location->lng)->orderBy('time', 'desc')->pluck('time')
+
+			];
+
+		}
+		return Response::json($surge_data);
 	}
 
 	/**
