@@ -34,3 +34,15 @@ Route::get('data', [
 	'as' => 'data.index',
 	'uses' => 'DataController@index'
 ]);
+Route::get('data/avg', [
+	'as' => 'data.avg',
+	'uses' => 'DataController@average'
+]);
+Route::get('data/specific', [
+	'as' => 'data.specific',
+	'uses' => 'DataController@specific'
+]);
+Route::post('data/specific_get', [
+	'as' => 'data.specific_get',
+	'uses' => 'DataController@specific_get'
+]);

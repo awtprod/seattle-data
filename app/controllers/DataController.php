@@ -247,11 +247,32 @@ class DataController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function edit($id)
+	public function specific()
 	{
-		//
-	}
+		$day = Input::get('day');
+		$time = Input::get('time');
 
+		Return View::make('data.specific', ['day'=>$day, 'time'=>$time]);
+	}
+	public function specific_get()
+	{
+		$day = Input::get('day');
+		$time = Input::get('time');
+
+		$data = Data::take(156)->whereDayOfWeek($day)->whereTime($time)->get();
+
+		foreach ($data as $test){
+
+			$array[] =[
+				$test->lat,
+				$test->lng,
+				$test->lyft_surge,
+				$test->time,
+				$test->day_of_week
+			];
+		}
+		Return Response::json($array);
+	}
 
 	/**
 	 * Update the specified resource in storage.
