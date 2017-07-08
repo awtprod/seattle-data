@@ -234,7 +234,7 @@ class DataController extends \BaseController {
 			$location->lat,
 			$location->lng,
 			Data::whereLat($location->lat)->whereLng($location->lng)->whereDayOfWeek($day)->orderBy('time', 'desc')->pluck('lyft_surge'),
-			Data::whereLat($location->lat)->whereLng($location->lng)->orderBy('time', 'desc')->pluck('time')
+				Data::whereLat($location->lat)->whereLng($location->lng)->whereDayOfWeek($day)->orderBy('time', 'desc')->pluck('time')
 
 			];
 
