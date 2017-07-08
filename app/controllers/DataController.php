@@ -225,7 +225,8 @@ class DataController extends \BaseController {
 
 	public function live()
 	{
-		$data = Data::take(156)->orderBy('time', 'desc')->get();
+		$day = Carbon::now();
+		$data = Data::take(156)->whereDayOfWeek($day->format('l'))->orderBy('time', 'desc')->get();
 		foreach ($data as $test){
 
 			$array[] =[
