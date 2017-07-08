@@ -53,7 +53,7 @@ class DataController extends \BaseController {
 			$data_point = new Data;
 			$data_point->lat = $location->lat;
 			$data_point->lng = $location->lng;
-			$data_point->day = $date->format('l');
+			$data_point->day_of_week = $date->format('l');
 			$data_point->time = $time;
 			$data_point->lyft_surge = $this->lyft($location);
 			$data_point->weather = $cur_obs->weather;
@@ -226,13 +226,14 @@ class DataController extends \BaseController {
 	public function live()
 	{
 		$locations = Locations::all();
-
+		$date = Carbon::now();
+		$day = $date->format('l');
 		foreach ($locations as $location){
 
 			$surge_data[]=[
 			$location->lat,
 			$location->lng,
-			Data::whereLat($location->lat)->whereLng($location->lng)->orderBy('time', 'desc')->pluck('lyft_surge'),
+			Data::whereLat($location->lat)->whereLng($location->lng)->whereDayOfWeek('Monday')->orderBy('time', 'desc')->pluck('lyft_surge'),
 			Data::whereLat($location->lat)->whereLng($location->lng)->orderBy('time', 'desc')->pluck('time')
 
 			];
