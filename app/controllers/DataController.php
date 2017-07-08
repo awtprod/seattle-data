@@ -232,7 +232,9 @@ class DataController extends \BaseController {
 			$array[] =[
 				$test->lat,
 				$test->lng,
-				$test->lyft_surge
+				$test->lyft_surge,
+				$test->time,
+				$test->day_of_week
 			];
 		}
 
