@@ -225,10 +225,18 @@ class DataController extends \BaseController {
 
 	public function live()
 	{
+		$max = 0;
 		$day = Carbon::now();
 		$data = Data::take(156)->whereDayOfWeek($day->format('l'))->orderBy('time', 'desc')->get();
+		if(empty($data[0])){
+			$array = array();
+		}
+		else{
 		foreach ($data as $test){
 
+			if($test->lyft_surge > $max){
+				$max = $test->lyft_surge;
+			}
 			$array[] =[
 				$test->lat,
 				$test->lng,
@@ -237,8 +245,8 @@ class DataController extends \BaseController {
 				$test->day_of_week
 			];
 		}
-
-		return Response::json($array);
+		}
+		return Response::json(array('data'=>$array,'max_data'=>$max));
 	}
 
 	/**
