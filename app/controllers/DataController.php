@@ -9,7 +9,7 @@ class DataController extends \BaseController {
 	 */
 	public function index()
 	{
-
+/*
 		$query = Data::whereBetween('id', [43301,56593])->get();
 
 		foreach ($query as $arr) {
@@ -21,7 +21,7 @@ class DataController extends \BaseController {
 				$update->time = $time;
 				$update->save();
 
-		}
+		}*/
 	}
 	/**
 	 * Show the form for creating a new resource.
@@ -247,31 +247,68 @@ class DataController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function specific()
+	public function average()
 	{
-		$day = Input::get('day');
-		$time = Input::get('time');
 
-		Return View::make('data.specific', ['day'=>$day, 'time'=>$time]);
+		Return View::make('data.average');
 	}
-	public function specific_get()
+	public function average_get()
 	{
 		$day = Input::get('day');
 		$time = Input::get('time');
 
-		$data = Data::take(156)->whereDayOfWeek($day)->whereTime($time)->get();
+		$locations = Locations::all();
 
-		foreach ($data as $test){
+		$data = Data::take(156)->where(function ($query) use ($time, $day) {
 
-			$array[] =[
-				$test->lat,
-				$test->lng,
-				$test->lyft_surge,
-				$test->time,
-				$test->day_of_week
+			$query->where('time', '=', $time);
+
+			if($day == 'Weekday') {
+				$query->whereIn('day_of_week', array('Monday','Tuesday','Wednesday','Thursday','Friday'));
+			}
+			elseif($day == 'Weekend') {
+				$query->whereIn('day_of_week', array('Saturday','Sunday'));
+			}
+			elseif(!empty($day)){
+				$query->where('day_of_week','=',$day);
+			}
+		})->get();
+
+		$max = 0;
+		foreach ($locations as $location) {
+			$avg_data = array();
+			$avg_data["total"] = 0;
+			$avg_data["count"] = 0;
+			foreach ($data as $test) {
+
+				if(($location->lat == $test->lat)AND($location->lng == $test->lng)) {
+
+					if($test->lyft_surge > $max){
+
+						$max = $test->lyft_surge;
+					}
+					$avg_data["total"] += $test->lyft_surge;
+					$avg_data["count"]++;
+				}
+
+			}
+			if($avg_data["count"]==0){
+				$average = 0;
+			}
+			else{
+				$average = ($avg_data["total"]/$avg_data["count"]);
+			}
+
+			$array[] = [
+				$location->lat,
+				$location->lng,
+				$average,
+				$time,
+				$day
 			];
 		}
-		Return Response::json($array);
+			Return Response::json(array('data'=>$array,'max_data'=>$max));
+
 	}
 
 	/**
