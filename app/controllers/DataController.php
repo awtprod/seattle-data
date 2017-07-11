@@ -315,6 +315,7 @@ class DataController extends \BaseController {
 				$day
 			];
 		}
+		dd($data);
 			Return Response::json(array('data'=>$array,'max_data'=>$max));
 
 	}
