@@ -281,7 +281,7 @@ class DataController extends \BaseController {
 				$query->where('day_of_week','=',$day);
 			}
 		})->get();
-
+dd(json_encode($data));
 		$max = 0;
 		foreach ($locations as $location) {
 			$avg_data = array();
