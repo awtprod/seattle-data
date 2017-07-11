@@ -267,7 +267,7 @@ class DataController extends \BaseController {
 
 		$locations = Locations::all();
 
-		$data = Data::take(156)->where(function ($query) use ($time, $day) {
+		$data = Data::where(function ($query) use ($time, $day) {
 
 			$query->where('time', '=', $time);
 
