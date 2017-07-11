@@ -281,7 +281,7 @@ class DataController extends \BaseController {
 				$query->where('day_of_week','=',$day);
 			}
 		})->get();
-
+dd($data);
 		$max = 0;
 		foreach ($locations as $location) {
 			$avg_data = array();
@@ -290,11 +290,6 @@ class DataController extends \BaseController {
 			foreach ($data as $test) {
 
 				if(($location->lat == $test->lat)AND($location->lng == $test->lng)) {
-
-					if($test->lyft_surge > $max){
-
-						$max = $test->lyft_surge;
-					}
 					$avg_data["total"] += $test->lyft_surge;
 					$avg_data["count"]++;
 				}
@@ -305,6 +300,10 @@ class DataController extends \BaseController {
 			}
 			else{
 				$average = ($avg_data["total"]/$avg_data["count"]);
+				if($average > $max){
+
+					$max = $average;
+				}
 			}
 
 			$array[] = [
@@ -312,7 +311,9 @@ class DataController extends \BaseController {
 				$location->lng,
 				$average,
 				$time,
-				$day
+				$day,
+				$avg_data["total"],
+				$avg_data["count"]
 			];
 		}
 			Return Response::json(array('data'=>$array,'max_data'=>$max));

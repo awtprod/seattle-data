@@ -46,3 +46,7 @@ Route::post('data/average_get', [
 	'as' => 'data.average_get',
 	'uses' => 'DataController@average_get'
 ]);
+Route::get('data/average_get', [
+	'as' => 'data.average_get',
+	'uses' => 'DataController@average_get'
+]);
