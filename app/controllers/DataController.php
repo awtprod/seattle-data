@@ -272,7 +272,7 @@ class DataController extends \BaseController {
 			$query->where('time', '=', $time);
 
 			if($day == 'Weekday') {
-				$query->where('day_of_week', array('Monday','Tuesday','Wednesday','Thursday','Friday'));
+				$query->whereIn('day_of_week', array('Monday','Tuesday','Wednesday','Thursday','Friday'));
 			}
 			elseif($day == 'Weekend') {
 				$query->whereIn('day_of_week', array('Saturday','Sunday'));
@@ -281,7 +281,7 @@ class DataController extends \BaseController {
 				$query->where('day_of_week','=',$day);
 			}
 		})->get();
-dd(json_encode($data));
+dd($data);
 		$max = 0;
 		foreach ($locations as $location) {
 			$avg_data = array();
