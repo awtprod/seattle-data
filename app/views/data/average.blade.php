@@ -57,7 +57,7 @@
 		<option value="Sunday">Sunday</option>
 	</select>
 	<button onclick="time_dec()"><</button>
-	Time: <input type="time" id="time" value="10:49">
+	Time: <input type="time" id="time" value="8:30">
 	<button onclick="time_inc()">></button>
 	Max: <span id="max"></span>
 </div>
