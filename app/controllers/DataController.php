@@ -272,7 +272,7 @@ class DataController extends \BaseController {
 			$query->where('time', '=', $time);
 
 			if($day == 'Weekday') {
-				$query->whereIn('day_of_week', array('Monday','Tuesday','Wednesday','Thursday','Friday'));
+				$query->where('day_of_week', array('Monday','Tuesday','Wednesday','Thursday','Friday'));
 			}
 			elseif($day == 'Weekend') {
 				$query->whereIn('day_of_week', array('Saturday','Sunday'));
