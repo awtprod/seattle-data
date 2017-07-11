@@ -287,11 +287,12 @@ class DataController extends \BaseController {
 			$avg_data = array();
 			$avg_data["total"] = 0;
 			$avg_data["count"] = 0;
-			foreach ($data as $test) {
+			foreach ($data as $key => $instance) {
 
-				if(($location->lat == $test->lat)AND($location->lng == $test->lng)) {
-					$avg_data["total"] += $test->lyft_surge;
+				if(($location->lat == $instance->lat)AND($location->lng == $instance->lng)) {
+					$avg_data["total"] += $instance->lyft_surge;
 					$avg_data["count"]++;
+					unset($data[$key]);
 				}
 
 			}
@@ -311,9 +312,7 @@ class DataController extends \BaseController {
 				$location->lng,
 				$average,
 				$time,
-				$day,
-				$avg_data["total"],
-				$avg_data["count"]
+				$day
 			];
 		}
 			Return Response::json(array('data'=>$array,'max_data'=>$max));
