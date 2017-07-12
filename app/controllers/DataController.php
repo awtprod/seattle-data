@@ -246,8 +246,14 @@ class DataController extends \BaseController {
 			];
 		}
 		}
-		return Response::json(array('data'=>$array,'max_data'=>$max));
-	}
+		if($max == 0){
+			Return Response::json(array('data' => array(), 'max_data' => $max));
+
+		}
+		else {
+
+			Return Response::json(array('data' => $array, 'max_data' => $max));
+		}	}
 
 	/**
 	 * Show the form for editing the specified resource.
