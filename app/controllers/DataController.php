@@ -226,7 +226,7 @@ class DataController extends \BaseController {
 	public function live()
 	{
 		$max = 0;
-		$data = Data::take(156)->orderBy('time', 'desc')->get();
+		$data = Data::take(156)->orderBy('created_at', 'desc')->get();
 		if(empty($data[0])){
 			$array = array();
 		}
