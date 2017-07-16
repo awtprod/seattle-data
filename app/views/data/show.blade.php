@@ -77,7 +77,7 @@
 							var heatMapData = [];
 							//prepare the data
 							$.each(data.data, function (i, r) {
-								console.log(r[3]);
+								console.log(r[3],r[4]);
 								heatMapData.push({
 									location: new google.maps.LatLng(r[0], r[1]),
 									weight: Number(r[2])
