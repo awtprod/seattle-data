@@ -9,20 +9,64 @@ class DataController extends \BaseController {
 	 */
 	public function index()
 	{
-/*
-		$query = Data::whereBetween('id', [43301,56593])->get();
 
-		foreach ($query as $arr) {
+			$end = Data::orderBy('id', 'desc')->pluck('id');
 
-			$time = date('H:i', strtotime($arr->created_at));
+			$start = 1;
+			$first = true;
+			while($start <= $end) {
 
-				$update = Data::whereId($arr->id)->first();
-				$update->day = 'Thursday';
-				$update->time = $time;
-				$update->save();
+				$query = Data::whereId($start)->first();
 
-		}*/
-	}
+
+				if(count($query)>0) {
+
+					if ($first == 'true') {
+
+						$time = new Time;
+						$time->month = 'July';
+						$time->day_of_week = $query->day_of_week;
+						$time->time = $query->time;
+						$time->weather = $query->weather;
+						$time->precip_tot = $query->precip_tot;
+						$time->precip_hr = $query->precip_hr;
+						$time->wndspd = $query->wndspd;
+						$time->temp = $query->temp;
+						$time->save();
+
+						$current_time = $query->time;
+
+						$first = false;
+					}
+
+					if ($query->time != $current_time) {
+
+
+						$time = new Time;
+						$time->month = 'July';
+						$time->day_of_week = $query->day_of_week;
+						$time->time = $query->time;
+						$time->weather = $query->weather;
+						$time->precip_tot = $query->precip_tot;
+						$time->precip_hr = $query->precip_hr;
+						$time->wndspd = $query->wndspd;
+						$time->temp = $query->temp;
+						$time->save();
+
+						$current_time = $query->time;
+
+					}
+					$location = Locations::whereLat($query->lat)->whereLng($query->lng)->first();
+
+					$query->loc_id = $location->id;
+					$query->time_id = $time->id;
+					$query->save();
+
+				}
+				$start++;
+
+			}
+			}
 	/**
 	 * Show the form for creating a new resource.
 	 *
@@ -90,13 +134,15 @@ class DataController extends \BaseController {
 			CURLOPT_CUSTOMREQUEST => "GET",
 			CURLOPT_HTTPHEADER => array(
 				"authorization: Bearer $token",
-				"cache-control: no-cache"
+				1
 			),
+			CURLOPT_RETURNTRANSFER => 1
 		));
 
 		$response = curl_exec($curl);
 
 		$data = json_decode($response);
+
 		$err = curl_error($curl);
 
 		curl_close($curl);
@@ -107,7 +153,8 @@ class DataController extends \BaseController {
 
 		$arr = (array) $data;
 
-		return  $arr["cost_estimates"][1]->primetime_percentage;
+
+		return  $arr["cost_estimates"][3]->primetime_percentage;
 
 	}
 
@@ -226,7 +273,7 @@ class DataController extends \BaseController {
 	public function live()
 	{
 		$max = 0;
-		$data = Data::take(156)->orderBy('created_at', 'desc')->get();
+		$data = Data::take(157)->orderBy('created_at', 'desc')->get();
 		if(empty($data[0])){
 			$array = array();
 		}
