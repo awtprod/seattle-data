@@ -17,6 +17,10 @@ Route::get('tokens/update', [
 	'as' => 'tokens.update',
 	'uses' => 'TokensController@update'
 ]);
+Route::get('predict', [
+	'as' => 'data.predict',
+	'uses' => 'DataController@predict'
+]);
 
 Route::get('collect', [
 	'as' => 'data.store',
@@ -42,6 +46,10 @@ Route::get('data/average', [
 	'as' => 'data.average',
 	'uses' => 'DataController@average'
 ]);
+Route::post('data/predict_get', [
+	'as' => 'data.predict_get',
+	'uses' => 'DataController@predict_get'
+]);
 Route::post('data/average_get', [
 	'as' => 'data.average_get',
 	'uses' => 'DataController@average_get'
@@ -49,4 +57,8 @@ Route::post('data/average_get', [
 Route::get('data/average_get', [
 	'as' => 'data.average_get',
 	'uses' => 'DataController@average_get'
+]);
+Route::get('data/median', [
+	'as' => 'data.median',
+	'uses' => 'DataController@calculate_median'
 ]);

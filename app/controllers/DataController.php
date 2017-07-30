@@ -67,14 +67,19 @@ class DataController extends \BaseController {
 
 			}
 			}
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function create()
-	{
-		//
+	public function calculate_median($arr) {
+
+		sort($arr);
+		$count = count($arr); //total numbers in array
+		$middleval = floor(($count-1)/2); // find the middle value, or the lowest middle value
+		if($count % 2) { // odd number, middle is the median
+			$median = $arr[$middleval];
+		} else { // even number, calculate avg of 2 medians
+			$low = $arr[$middleval];
+			$high = $arr[$middleval+1];
+			$median = (($low+$high)/2);
+		}
+		return $median;
 	}
 
 
@@ -98,6 +103,7 @@ class DataController extends \BaseController {
 			$data_point->lat = $location->lat;
 			$data_point->lng = $location->lng;
 			$data_point->day_of_week = $date->format('l');
+			$data_point->month = $date->format('F');
 			$data_point->time = $time;
 			$data_point->lyft_surge = $this->lyft($location);
 			$data_point->weather = $cur_obs->weather;
@@ -307,12 +313,18 @@ class DataController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function average()
+	public function predict()
 	{
+		$date = Carbon::now();
+		$hr = date('H', strtotime($date));
+		$min = date('i', strtotime($date));
 
-		Return View::make('data.average');
+		$min += 5;
+		$data = Data::whereBetween('time', array('13:04', '13:30'))->get();
+		print_r($data);
+		//Return View::make('data.predict');
 	}
-	public function average_get()
+	public function predict_get()
 	{
 		$day = Input::get('day');
 		$time = Input::get('time');
@@ -363,6 +375,76 @@ class DataController extends \BaseController {
 				$location->lat,
 				$location->lng,
 				$average,
+				$time,
+				$day
+			];
+		}
+		if($max == 0){
+			Return Response::json(array('data' => array(), 'max_data' => $max));
+
+		}
+		else {
+
+			Return Response::json(array('data' => $array, 'max_data' => $max));
+		}
+
+	}
+	public function average()
+	{
+
+		Return View::make('data.average');
+	}
+	public function average_get()
+	{
+		$day = Input::get('day');
+		$time = Input::get('time');
+
+		$locations = Locations::all();
+
+		$data = Data::where(function ($query) use ($time, $day) {
+
+			$query->where('time', '=', $time);
+
+			if($day == 'Weekday') {
+				$query->whereIn('day_of_week', array('Monday','Tuesday','Wednesday','Thursday','Friday'));
+			}
+			elseif($day == 'Weekend') {
+				$query->whereIn('day_of_week', array('Saturday','Sunday'));
+			}
+			elseif(!empty($day)){
+				$query->where('day_of_week','=',$day);
+			}
+		})->get();
+
+		$max = 0;
+		foreach ($locations as $location) {
+			$median_data = array();
+			$count = 0;
+			foreach ($data as $key => $instance) {
+
+				if(($location->lat == $instance->lat)AND($location->lng == $instance->lng)) {
+					$median_data[] = $instance->lyft_surge;
+					$count++;
+					unset($data[$key]);
+
+				}
+
+			}
+			if($count==0){
+				$median = 0;
+			}
+			else{
+				$median = $this->calculate_median($median_data);
+				if($median > $max){
+
+					$max = $median;
+				}
+			}
+
+			$array[] = [
+				$location->lat,
+				$location->lng,
+				$median,
 				$time,
 				$day
 			];
