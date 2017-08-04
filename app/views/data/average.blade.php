@@ -59,7 +59,8 @@
 	<button onclick="time_dec()"><</button>
 	Time: <input type="time" id="time" value="08:30">
 	<button onclick="time_inc()">></button>
-	Max: <span id="max"></span>
+	Max Median: <span id="median"></span>
+	Max Average: <span id="average"></span>
 </div>
 <div id="map"></div>
 <script>
@@ -100,11 +101,13 @@
 						url: '/data/average_get',
 						data: {day: day, time: time},
 						success: function (data) {
+							console.log(data);
 							if(data.length === 0){
 
 							}
 							else {
-								$('#max').text(data.max_data);
+								$('#median').text(data.max_median);
+								$('#average').text(data.max_average);
 								var heatMapData = [];
 								//prepare the data
 								$.each(data.data, function (i, r) {
@@ -137,14 +140,17 @@
 						url: '/data/average_get',
 						data: {day: day, time: time},
 						success: function (data) {
+							console.log(data);
 							if(data.length === 0){
 
 							}
 							else {
-								$('#max').text(data.max_data);
+								$('#median').text(data.max_median);
+								$('#average').text(data.max_average);
 								var heatMapData = [];
 								//prepare the data
 								$.each(data.data, function (i, r) {
+									console.log(r[3]);
 									heatMapData.push({
 										location: new google.maps.LatLng(r[0], r[1]),
 										weight: Number(r[2])

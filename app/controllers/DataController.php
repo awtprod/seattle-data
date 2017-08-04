@@ -81,6 +81,15 @@ class DataController extends \BaseController {
 		}
 		return $median;
 	}
+	public function calculate_average($arr) {
+		$count = count($arr); //total numbers in array
+		$total = 0;
+		foreach ($arr as $value) {
+			$total = $total + $value; // total value of array numbers
+		}
+		$average = ($total/$count); // get average value
+		return $average;
+	}
 
 
 	/**
@@ -289,13 +298,16 @@ class DataController extends \BaseController {
 			if($test->lyft_surge > $max){
 				$max = $test->lyft_surge;
 			}
-			$array[] =[
-				$test->lat,
-				$test->lng,
-				$test->lyft_surge,
-				$test->time,
-				$test->day_of_week
-			];
+
+			if($test->lyft_surge > 0) {
+				$array[] = [
+					$test->lat,
+					$test->lng,
+					$test->lyft_surge,
+					$test->time,
+					$test->day_of_week
+				];
+			}
 		}
 		}
 		if($max == 0){
@@ -416,7 +428,8 @@ class DataController extends \BaseController {
 			}
 		})->get();
 
-		$max = 0;
+		$max_average = 0;
+		$max_median = 0;
 		foreach ($locations as $location) {
 			$median_data = array();
 			$count = 0;
@@ -435,27 +448,35 @@ class DataController extends \BaseController {
 			}
 			else{
 				$median = $this->calculate_median($median_data);
-				if($median > $max){
+				if($median > $max_median){
 
-					$max = $median;
+					$max_median = $median;
+				}
+				$average = $this->calculate_average($median_data);
+				if($average > $max_average){
+					$max_average = $average;
+				}
+				if($median != 0) {
+					$array[] = [
+						$location->lat,
+						$location->lng,
+						$median,
+						$median_data,
+						$time,
+						$day
+					];
 				}
 			}
 
-			$array[] = [
-				$location->lat,
-				$location->lng,
-				$median,
-				$time,
-				$day
-			];
+
 		}
-		if($max == 0){
-			Return Response::json(array('data' => array(), 'max_data' => $max));
+		if($max_median == 0){
+			Return Response::json(array('data' => array(), 'max_median' => $max_median, 'max_average' => $max_average));
 
 		}
 		else {
 
-			Return Response::json(array('data' => $array, 'max_data' => $max));
+			Return Response::json(array('data' => $array, 'max_median' => $max_median, 'max_average' => $max_average));
 		}
 
 	}
