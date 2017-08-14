@@ -108,13 +108,16 @@ class DataController extends \BaseController {
 
 		foreach ($locations as $location){
 
+			$primetime = $this->lyft($location);
+
 			$data_point = new Data;
 			$data_point->lat = $location->lat;
 			$data_point->lng = $location->lng;
 			$data_point->day_of_week = $date->format('l');
 			$data_point->month = $date->format('F');
 			$data_point->time = $time;
-			$data_point->lyft_surge = $this->lyft($location);
+			$data_point->lyft_surge = $primetime["lyft"];
+			$data_point->line_surge = $primetime["lyft_line"];
 			$data_point->weather = $cur_obs->weather;
 			$data_point->precip_tot = $cur_obs->precip_today_in;
 			$data_point->precip_hr = $cur_obs->precip_1hr_in;
@@ -168,8 +171,18 @@ class DataController extends \BaseController {
 
 		$arr = (array) $data;
 
+		$primetime = array();
+		foreach ($arr["cost_estimates"] as $type){
 
-		return  $arr["cost_estimates"][3]->primetime_percentage;
+			if($type->ride_type =="lyft_line"){
+				$primetime["lyft_line"] = $type->primetime_percentage;
+			}
+			if($type->ride_type =="lyft"){
+				$primetime["lyft"] = $type->primetime_percentage;
+			}
+		}
+
+		return  $primetime;
 
 	}
 
