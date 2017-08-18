@@ -62,3 +62,7 @@ Route::get('data/median', [
 	'as' => 'data.median',
 	'uses' => 'DataController@calculate_median'
 ]);
+Route::get('data/airport', [
+	'as' => 'data.airport',
+	'uses' => 'DataController@airport'
+]);

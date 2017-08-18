@@ -414,6 +414,21 @@ class DataController extends \BaseController {
 		}
 
 	}
+	public function airport(){
+		$data = Data::where(function ($query)  {
+			$query->whereIn('lat', array('47.44456000','47.44234000'));
+			$query->where('lyft_surge','>','0');
+		})->get();
+
+foreach ($data as $time){
+	echo $time->lat.'<br>';
+	echo $time->lng.'<br>';
+	echo $time->day_of_week.'<br>';
+	echo $time->time.'<br>';
+	echo $time->lyft_surge.'<p>';
+
+}
+		}
 	public function average()
 	{
 
