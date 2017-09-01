@@ -143,6 +143,7 @@ class DataController extends \BaseController {
 
 		curl_setopt_array($curl, array(
 			CURLOPT_URL => $req,
+			CURLOPT_FRESH_CONNECT => true,
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_CAINFO, app_path("/cacert.pem"),
 			CURLOPT_ENCODING => "",
