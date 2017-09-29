@@ -439,10 +439,12 @@ foreach ($data as $time){
 	{
 		$day = Input::get('day');
 		$time = Input::get('time');
+		$month = Input::get('month');
+
 
 		$locations = Locations::all();
 
-		$data = Data::where(function ($query) use ($time, $day) {
+		$data = Data::where(function ($query) use ($time, $day, $month) {
 
 			$query->where('time', '=', $time);
 
@@ -454,6 +456,9 @@ foreach ($data as $time){
 			}
 			elseif(!empty($day)){
 				$query->where('day_of_week','=',$day);
+			}
+			if(!empty($month)){
+				$query->where('month','=',$month);
 			}
 		})->get();
 

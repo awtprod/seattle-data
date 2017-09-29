@@ -56,6 +56,21 @@
 		<option value="Saturday">Saturday</option>
 		<option value="Sunday">Sunday</option>
 	</select>
+	Month: <select id="month">
+		<option value="">All</option>
+		<option value="January">January</option>
+		<option value="February">February</option>
+		<option value="March">March</option>
+		<option value="April">April</option>
+		<option value="May">May</option>
+		<option value="June">June</option>
+		<option value="July">July</option>
+		<option value="August">August</option>
+		<option value="September" selected>September</option>
+		<option value="October">October</option>
+		<option value="November">November</option>
+		<option value="December">December</option>
+	</select>
 	<button onclick="time_dec()"><</button>
 	Time: <input type="time" id="time" value="08:30">
 	<button onclick="time_inc()">></button>
@@ -132,13 +147,14 @@
 			heatmap.setMap(heatmap.getMap() ? null : map);
 
 			var day = $("select#day_of_week option:checked").val();
+			var month = $("select#month option:checked").val();
 			var time = $("#time").val();
 
 			$.ajax(
 					{
 						method: 'POST',
 						url: '/data/average_get',
-						data: {day: day, time: time},
+						data: {day: day, month: month, time: time},
 						success: function (data) {
 							console.log(data);
 							if(data.length === 0){
