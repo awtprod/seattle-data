@@ -100,6 +100,9 @@
 		$("#day_of_week").change(function () {
 			toggleHeatmap();
 		});
+		$("#month").change(function () {
+			toggleHeatmap();
+		});
 
 		function initMap() {
 			var day = $("select#day_of_week option:checked").val();
